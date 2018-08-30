@@ -281,7 +281,7 @@ module.exports = ReactPropTypesSecret;
 
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+    value: true
 });
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
@@ -307,100 +307,123 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var PJBankCheckout = function (_React$Component) {
-  _inherits(PJBankCheckout, _React$Component);
+    _inherits(PJBankCheckout, _React$Component);
 
-  function PJBankCheckout(props) {
-    _classCallCheck(this, PJBankCheckout);
+    function PJBankCheckout(props) {
+        _classCallCheck(this, PJBankCheckout);
 
-    var _this = _possibleConstructorReturn(this, (PJBankCheckout.__proto__ || Object.getPrototypeOf(PJBankCheckout)).call(this, props));
+        var _this = _possibleConstructorReturn(this, (PJBankCheckout.__proto__ || Object.getPrototypeOf(PJBankCheckout)).call(this, props));
 
-    _this.onToken = _this.onToken.bind(_this);
-    return _this;
-  }
-
-  _createClass(PJBankCheckout, [{
-    key: "componentDidMount",
-    value: function componentDidMount() {
-      var _this2 = this;
-
-      this.addScript(function () {
-        window.superlogica.require("pjbank");
-        window.superlogica.pjbank("checkout_transparente", "" + _this2.props.credencial);
-        _this2.tokenInput.addEventListener("change", _this2.onToken);
-      });
+        _this.onChange = _this.onChange.bind(_this);
+        return _this;
     }
-  }, {
-    key: "componentWillUnmount",
-    value: function componentWillUnmount() {
-      this.tokenInput.removeEventListener("change", this.onToken);
-      this.removeScript('pjbankscript');
-    }
-  }, {
-    key: "onToken",
-    value: function onToken(evt) {
-      this.props.onToken(evt.target.value);
-    }
-  }, {
-    key: "addScript",
-    value: function addScript(callback) {
-      var script = document.createElement("script");
-      script.src = "https://s3-sa-east-1.amazonaws.com/widgets.superlogica.net/embed.js";
-      script.async = true;
-      script.id = "pjbankscript";
-      document.body.appendChild(script);
-      script.onload = function () {
-        callback && callback();
-      };
-    }
-  }, {
-    key: "removeScript",
-    value: function removeScript(id) {
-      var script = document.getElementById(id);
-      script.parentNode.removeChild(script);
-      return false;
-    }
-  }, {
-    key: "render",
-    value: function render() {
-      var _this3 = this;
 
-      var _props$inputProps = this.props.inputProps,
-          className = _props$inputProps.className,
-          rest = _objectWithoutProperties(_props$inputProps, ["className"]);
+    _createClass(PJBankCheckout, [{
+        key: "componentDidMount",
+        value: function componentDidMount() {
+            var _this2 = this;
 
-      return _react2.default.createElement(
-        "div",
-        { style: this.props.componentStyle },
-        _react2.default.createElement("input", _extends({}, rest, {
-          className: "pjbank-cartao " + className,
-          id: "cartao"
-        })),
-        _react2.default.createElement("input", {
-          ref: function ref(t) {
-            return _this3.tokenInput = t;
-          },
-          type: "hidden",
-          name: "pjbank-token",
-          className: "pjbank-token"
-        })
-      );
-    }
-  }]);
+            var _props = this.props,
+                credencial = _props.credencial,
+                homologacao = _props.homologacao;
 
-  return PJBankCheckout;
+            this.addScript(function () {
+                window.superlogica.require("pjbank");
+                window.superlogica.pjbank("checkout_transparente", "" + credencial, homologacao);
+                _this2.tokenInput.addEventListener("change", _this2.onChange);
+            });
+        }
+    }, {
+        key: "componentWillUnmount",
+        value: function componentWillUnmount() {
+            this.tokenInput.removeEventListener("change", this.onChange);
+            this.removeScript('pjbankscript');
+        }
+    }, {
+        key: "onChange",
+        value: function onChange(_ref) {
+            var target = _ref.target;
+
+            var token = target.value;
+            if (token) {
+                this.props.onData({
+                    token: token,
+                    bandeira: this.bandeira.value
+                });
+            }
+        }
+    }, {
+        key: "addScript",
+        value: function addScript(callback) {
+            var script = document.createElement("script");
+            script.src = "https://s3-sa-east-1.amazonaws.com/widgets.superlogica.net/embed.js";
+            script.async = true;
+            script.id = "pjbankscript";
+            document.body.appendChild(script);
+            script.onload = function () {
+                callback && callback();
+            };
+        }
+    }, {
+        key: "removeScript",
+        value: function removeScript(id) {
+            var script = document.getElementById(id);
+            script.parentNode.removeChild(script);
+        }
+    }, {
+        key: "render",
+        value: function render() {
+            var _this3 = this;
+
+            var _props$inputProps = this.props.inputProps,
+                className = _props$inputProps.className,
+                rest = _objectWithoutProperties(_props$inputProps, ["className"]);
+
+            return _react2.default.createElement(
+                "div",
+                { style: this.props.componentStyle },
+                _react2.default.createElement("input", _extends({}, rest, {
+                    className: "pjbank-cartao " + className,
+                    id: "cartao"
+                })),
+                _react2.default.createElement("input", {
+                    ref: function ref(t) {
+                        return _this3.tokenInput = t;
+                    },
+                    type: "hidden",
+                    name: "pjbank-token",
+                    className: "pjbank-token"
+                }),
+                _react2.default.createElement("input", {
+                    ref: function ref(bandeira) {
+                        return _this3.bandeira = bandeira;
+                    },
+                    type: "hidden",
+                    id: "bandeira",
+                    name: "pjbank-cartao-bandeira",
+                    className: "pjbank-cartao-bandeira" })
+            );
+        }
+    }]);
+
+    return PJBankCheckout;
 }(_react2.default.Component);
 
 PJBankCheckout.propTypes = {
-  placeholder: _propTypes2.default.string,
-  credencial: _propTypes2.default.string.isRequired,
-  onToken: _propTypes2.default.func,
-  inputProps: _propTypes2.default.object,
-  componentStyle: _propTypes2.default.object
+    placeholder: _propTypes2.default.string,
+    credencial: _propTypes2.default.string.isRequired,
+    homologacao: _propTypes2.default.bool,
+    onData: _propTypes2.default.func,
+    inputProps: _propTypes2.default.object,
+    componentStyle: _propTypes2.default.object
 };
 
 PJBankCheckout.defaultProps = {
-  onToken: function onToken() {}
+    onData: function onData() {},
+    inputProps: {},
+    homologacao: false
 };
+
 exports.default = PJBankCheckout;
 
 /***/ }),
